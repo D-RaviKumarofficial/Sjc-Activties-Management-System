@@ -1,65 +1,66 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\W2w_Event_type;
 use App\Models\W2w_Event;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class W2wEventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $events = W2w_Event::all();
+        return view('admin.EventManagement.event.index', compact('events'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $eventTypes = W2w_Event_type::all();
+        return view('admin.EventManagement.event.create', compact('eventTypes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'event_type_id' => 'required',
+            'event_type' => 'required',
+            'short_description' => 'required',
+            'event_date' => 'required|date',
+            'event_start_time' => 'required',
+            'event_end_time' => 'required',
+            'event_location' => 'required',
+        ]);
+
+        W2w_Event::create($request->all());
+        return redirect()->route('events.index')->with('success', 'Event created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(W2w_Event $w2w_Event)
+    public function edit(W2w_Event $event)
     {
-        //
+        $eventTypes = W2w_Event_type::all();
+        return view('admin.EventManagement.event.create', compact('event', 'eventTypes'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(W2w_Event $w2w_Event)
+    public function update(Request $request, W2w_Event $event)
     {
-        //
+        $request->validate([
+            'event_type_id' => 'required',
+            'event_type' => 'required',
+            'short_description' => 'required',
+            'event_date' => 'required|date',
+            'event_start_time' => 'required',
+            'event_end_time' => 'required',
+            'event_location' => 'required',
+        ]);
+
+        $event->update($request->all());
+        return redirect()->route('events.index')->with('success', 'Event updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, W2w_Event $w2w_Event)
+    public function destroy(W2w_Event $event)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(W2w_Event $w2w_Event)
-    {
-        //
+        $event->delete();
+        return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\W2wEventController;
 
 Route::get('/', function () {
     return view('user.login');
@@ -19,3 +20,5 @@ Route::get('user/aboutus', [UserController::class, 'aboutus'])->name('user.about
 
 
 require __DIR__.'/admin.php';
+Route::resource('events', W2wEventController::class);
+
